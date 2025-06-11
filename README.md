@@ -14,8 +14,8 @@ ESP32-C3作为主控，驱动240*240屏幕，使用blufi一键配网绑定，软
 3. 完全兼容 xiaozhi-esp32-server.
 
 
-## 效果视频
-
+## 效果视频及其使用教程
+【四博Blufi蓝牙配网小智，全小程序操作，让AI走向每个开发者】https://www.bilibili.com/video/BV1PUTKz8EA7?vd_source=f5bb36b692814a666a5a5d7ea3d5ecad
 ## 使用说明
 1. 获取代码：git clone https://github.com/SmartArduino/DOIT_AI_BluFi.git
 2. 使用vscode打开工程（需espidf版本>5.3.2,建议使用5.4.1版本）,设置目标芯片为esp32c3，命令：idf.py set-target esp32c3
@@ -25,7 +25,9 @@ ESP32-C3作为主控，驱动240*240屏幕，使用blufi一键配网绑定，软
 5. 烧录代码:idf.py flash
 6. 使用小程序小智小助理blufi配网
 ![alt text](image1.jpg)
-
+## 重新配网
+1. 连续按BOOT键三次进入配网模式
+2. WI-FI断连60秒后进入配网模式
 
 ## 技术支持
 ![alt text](image.png)
