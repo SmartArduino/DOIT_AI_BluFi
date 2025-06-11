@@ -194,6 +194,7 @@ void WifiBoard::ResetWifiConfiguration() {
     {
         Settings settings("wifi", true);
         settings.SetInt("force_ap", 1);
+        blufi_storage_write_has_config(false);
     }
     GetDisplay()->ShowNotification(Lang::Strings::ENTERING_WIFI_CONFIG_MODE);
     vTaskDelay(pdMS_TO_TICKS(1000));
