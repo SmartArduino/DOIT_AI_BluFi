@@ -454,6 +454,28 @@ static void example_event_callback(esp_blufi_cb_event_t event, esp_blufi_cb_para
     case ESP_BLUFI_EVENT_RECV_CUSTOM_DATA:
         ESP_LOGI(TAG, "Recv Custom Data %" PRIu32 "\n", param->custom_data.data_len);
         ESP_LOG_BUFFER_HEX("Custom Data", param->custom_data.data, param->custom_data.data_len);
+        
+        // 解析AT+OTA命令
+        if (param->custom_data.data_len > 7) { // 至少需要"AT+OTA="的长度
+            char *data_str = (char*)malloc(param->custom_data.data_len + 1);
+            if (data_str) {
+                memcpy(data_str, param->custom_data.data, param->custom_data.data_len);
+                data_str[param->custom_data.data_len] = '\0'; // 确保字符串以null结尾
+                
+                // 检查是否是AT+OTA命令
+                if (strncmp(data_str, "AT+OTA=", 7) == 0) {
+                    char *url = data_str + 7; // 跳过"AT+OTA="部分
+                    ESP_LOGI(TAG, "解析到OTA URL: %s", url);
+                    blufi_storage_write_ota_url(url);
+                } else {
+                    ESP_LOGI(TAG, "接收到的自定义数据: %s", data_str);
+                }
+                
+                free(data_str);
+            } else {
+                ESP_LOGE(TAG, "内存分配失败");
+            }
+        }
         break;
 	case ESP_BLUFI_EVENT_RECV_USERNAME:
         /* Not handle currently */
@@ -542,7 +564,19 @@ void blufi_storage_read_wifi_ssid(char *ssid) {
   void blufi_storage_write_wifi_password(const char *password) {
     _nvs_set_blob("blufi_wifi_psw", (uint8_t *)password, strlen(password) + 1);
   }
-
+  
+  // 读取ota url
+  void blufi_storage_read_ota_url(char *url) {
+    _nvs_get_blob("blufi_ota_url", (uint8_t *)url);
+  }
+  // 读取wifi url长度，包括\0
+  size_t blufi_storage_read_ota_url_length() {
+    return _nvs_get_blob_len("blufi_ota_url");
+  }
+  // 写入wifi url
+  void blufi_storage_write_ota_url(const char *url) {
+    _nvs_set_blob("blufi_ota_url", (uint8_t *)url, strlen(url) + 1);
+  }
 
 void doit_blufi_send_code(uint8_t *code){
     ESP_LOGI(TAG, "doit_blufi_send_code: %02x %02x %02x %02x %02x %02x", code[0], code[1], code[2], code[3], code[4], code[5]);

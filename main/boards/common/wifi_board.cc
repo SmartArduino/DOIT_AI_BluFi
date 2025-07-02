@@ -116,7 +116,7 @@ void WifiBoard::StartNetwork() {
             break;
         }
         
-        if(wait_cnt > 60){
+        if(wait_cnt > 180){ // 3 minutes
             EnterWifiConfigMode();
             return;
         }
