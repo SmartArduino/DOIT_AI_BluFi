@@ -20,7 +20,7 @@
 #include <sstream>
 
 #include "vb6824.h"
-
+#include "doit_blufi.h"
 static const char *TAG = "VbAduioCodec";
 
 #define VB_PLAY_SAMPLE_RATE     16 * 1000
@@ -86,7 +86,10 @@ int VbAduioCodec::OtaStart(uint8_t mode) {
     auto& wifi_station = WifiStation::GetInstance();
     const std::string ip = wifi_station.GetIpAddress();
     std::string code = GenDevCode();
-    if(!wifi_station.IsConnected() || app.GetDeviceState() == kDeviceStateActivating) {
+     //==================blufi=====================
+    // if(!wifi_station.IsConnected() || app.GetDeviceState() == kDeviceStateActivating) {
+    if(!blufi_storage_read_has_config() || app.GetDeviceState() == kDeviceStateActivating) {
+    //============================================
         vTaskDelay(pdMS_TO_TICKS(1000));
         app.Schedule([this]() {
             this->OtaStart(1);
